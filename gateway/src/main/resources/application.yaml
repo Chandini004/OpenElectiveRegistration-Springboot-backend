@@ -1,0 +1,39 @@
+server:
+  port: 4003
+  
+spring:
+  application:
+    name: GATEWAY-SERVICE
+  cloud:
+     gateway:
+       routes:
+        - id: USER-SERVICE
+          uri:
+            lb://USER-SERVICE
+          predicates:
+           - Path= /auth/**, /users/**, /api/users/**, /
+        - id: COURSE-SERVICE
+          uri:
+            lb://COURSE-SERVICE
+          predicates:
+           - Path=/api/courses/**, /courses/**
+       default-filters:
+         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+       globalcors:
+          cors-configurations:
+           '[/**]':
+             allowedOrigins: "*"
+             allowedMethods: "*"
+             allowedHeaders: "*"
+  
+
+  
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8050/eureka/
